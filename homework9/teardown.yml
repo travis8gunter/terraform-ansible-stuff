@@ -1,0 +1,40 @@
+---
+- name: Teardown users and groups
+  hosts: all
+  become: yes
+  vars:
+    user_names:
+      - CEO
+      - CFO
+      - CIO
+      - Jill-Analyst1
+      - Brooke-Analyst2
+      - Rich-Analyst3
+      - Carl-Analyst4
+      - Andrew-Analyst5
+      - John-Admin1
+      - Jerry-Admin2
+
+    group_names:
+      - executives
+      - analysts
+      - administrators
+
+  tasks:
+    - name: Remove accounts
+      user:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ user_names }}"
+
+    - name: Remove directories
+      file:
+        path: "/financial/work/{{ item }}"
+        state: absent
+      loop: "{{ group_names }}"
+
+    - name: Remove groups
+      group:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ group_names }}"
