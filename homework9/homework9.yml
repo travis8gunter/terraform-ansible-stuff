@@ -1,0 +1,48 @@
+---
+- name: Setup Users and Groups
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create user groups
+      group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - executives
+        - analysts
+        - administrators
+
+    - name: Create user and assign to group
+      user:
+        name: "{{ item.name }}"
+        group: "{{ item.group }}"
+        password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters,digits,hexdigits,@,%,^,_,~') }}"
+        state: present
+      loop:
+        - { name: 'CEO', group: 'executives' }
+        - { name: 'CFO', group: 'executives' }
+        - { name: 'CIO', group: 'executives' }
+        - { name: 'Jill-Analyst1', group: 'analysts' }
+        - { name: 'Brooke-Analyst2', group: 'analysts' }
+        - { name: 'Rich-Analyst3', group: 'analysts' }
+        - { name: 'Carl-Analyst4', group: 'analysts' }
+        - { name: 'Andrew-Analyst5', group: 'analysts' }
+        - { name: 'John-Admin1', group: 'administrators' }
+        - { name: 'Jerry-Admin2', group: 'administrators' }
+
+    - name: Create directories for groups
+      file:
+        path: "/financial/work/{{ item }}"
+        state: directory
+        owner: root
+        group: "{{ item }}"
+        mode: '2770'
+      loop:
+        - executives
+        - analysts
+        - administrators
+
+    - name: Install libpam-pwquality for enforcing password policy
+      apt:
+        name: libpam-pwquality
+        state: present
