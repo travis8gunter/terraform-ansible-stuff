@@ -1,0 +1,10 @@
+---
+- hosts: php
+  become: yes
+  roles:
+    - mphp
+
+- hosts: python
+  become: yes
+  roles:
+    - mpython
