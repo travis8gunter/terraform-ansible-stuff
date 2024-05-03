@@ -1,0 +1,33 @@
+---
+- name: Install PHP and Extensions on Local VMs
+  hosts: local_vms
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 86400  # Cache valid for a day
+
+    - name: Install PHP and common extensions
+      apt:
+        name:
+          - php
+          - php-cli
+          - php-fpm
+          - php-json
+          - php-common
+          - php-mysql
+          - php-zip
+          - php-gd
+          - php-mbstring
+          - php-curl
+          - php-xml
+          - php-pear
+          - php-bcmath
+        state: latest
+
+    - name: Ensure PHP-FPM is running
+      systemd:
+        name: php{{ php_version }}-fpm
+        state: started
+        enabled: yes
