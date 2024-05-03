@@ -1,0 +1,22 @@
+---
+- name: Configure AWS Instances
+  hosts: aws
+  become: yes  
+  tasks:
+    - name: Update all packages
+      become: yes  #root
+      apt:
+        update_cache: yes
+        upgrade: 'dist'
+
+    - name: Install Node.js
+      become: yes  
+      apt:
+        name: nodejs
+        state: latest
+
+    - name: Install NPM
+      become: yes
+      apt:
+        name: npm
+        state: latest
